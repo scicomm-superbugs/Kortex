@@ -33,6 +33,10 @@ interface AppToast {
 export default function App() {
   // Theme state selector
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    const portalDark = localStorage.getItem('scicommDarkMode');
+    if (portalDark !== null) {
+      return portalDark === 'true' ? 'dark' : 'light';
+    }
     return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
   });
 
@@ -40,6 +44,18 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    const syncTheme = () => {
+      const portalDark = localStorage.getItem('scicommDarkMode');
+      if (portalDark !== null) {
+        setTheme(portalDark === 'true' ? 'dark' : 'light');
+      }
+    };
+    window.addEventListener('storage', syncTheme);
+    syncTheme();
+    return () => window.removeEventListener('storage', syncTheme);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
@@ -103,10 +119,14 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (!parsed.notifications) {
-          parsed.notifications = INITIAL_STATE.notifications;
-        }
-        return parsed;
+        return {
+          ...INITIAL_STATE,
+          ...parsed,
+          notifications: parsed.notifications || INITIAL_STATE.notifications,
+          teamUsers: parsed.teamUsers || INITIAL_STATE.teamUsers,
+          currentUserRoleId: parsed.currentUserRoleId || INITIAL_STATE.currentUserRoleId,
+          adminSettings: parsed.adminSettings || INITIAL_STATE.adminSettings,
+        };
       } catch (e) {
         console.error('Failed to parse saved database state. Reverting to presets.', e);
         return INITIAL_STATE;
@@ -199,7 +219,31 @@ export default function App() {
   const adminUser = state.teamUsers?.find(u => u.id === state.currentUserRoleId) || state.teamUsers?.find(u => u.id === 'user-admin') || INITIAL_STATE.teamUsers?.[0];
 
   const renderAvatar = (size = 24) => {
-    if (adminUser?.avatar) return <img src={adminUser.avatar} alt="Me" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
+    if (adminUser?.avatar) {
+      const isUrl = adminUser.avatar.startsWith('http') || adminUser.avatar.startsWith('data:') || adminUser.avatar.startsWith('.') || adminUser.avatar.startsWith('/');
+      if (isUrl) {
+        return <img src={adminUser.avatar} alt="Me" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
+      } else {
+        return (
+          <div style={{
+            width: size,
+            height: size,
+            borderRadius: '50%',
+            backgroundColor: theme === 'dark' ? '#1e1b4b' : '#eff6ff',
+            color: theme === 'dark' ? '#c084fc' : '#3b82f6',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: `${size * 0.55}px`,
+            fontWeight: 'bold',
+            lineHeight: 1,
+            boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.06)'
+          }}>
+            {adminUser.avatar}
+          </div>
+        );
+      }
+    }
     return <UserCircle className="icon" size={size} />;
   };
 
@@ -324,7 +368,7 @@ export default function App() {
           <div className="scicomm-header-left">
             {/* Mobile: Profile avatar triggers sidebar | Desktop: Logo */}
             <button onClick={() => setMobileSidebarOpen(true)} className="scicomm-mobile-profile-link" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></button>
-            <a href="https://scicomm-superbugs.github.io/Portal/#/portal"><img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => (e.target as HTMLElement).style.display='none'} /></a>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/"><img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => (e.target as HTMLElement).style.display='none'} /></a>
             <div className="scicomm-search-box">
               <Search className="icon text-slate-500" size={16} />
               <input 
@@ -342,17 +386,14 @@ export default function App() {
             <MessageCircle className="icon text-slate-400" size={24} color="currentColor" />
           </a>
           <nav className="scicomm-nav">
-            <button 
-              onClick={() => {
-                setActiveView('dashboard');
-                setSelectedFolderFilter(null);
-              }} 
-              className={`scicomm-nav-item ${activeView === 'dashboard' ? 'active' : ''}`} 
+            <a 
+              href="https://scicomm-superbugs.github.io/Portal/#/" 
+              className="scicomm-nav-item"
               style={{ position: 'relative' }}
             >
               <LayoutDashboard className="icon" size={20} />
               <span className="nav-text">WorkSpace</span>
-            </button>
+            </a>
 
             <a href="https://scicomm-superbugs.github.io/Portal/#/community" className="scicomm-nav-item"><Globe className="icon" size={20} /><span className="nav-text">Community</span></a>
             <a href="https://scicomm-superbugs.github.io/Portal/#/network" className="scicomm-nav-item"><Users className="icon" size={20} /><span className="nav-text">Network</span></a>
@@ -373,9 +414,6 @@ export default function App() {
                   </div>
                   <a href="https://scicomm-superbugs.github.io/Portal/#/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</a>
                 </div>
-                <button onClick={toggleTheme} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
-                  {theme === 'dark' ? <Sun className="icon" size={16} /> : <Moon className="icon" size={16} />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                </button>
                 <a href="https://scicomm-superbugs.github.io/Portal/#/settings" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
                   <Settings className="icon" size={16} /> Settings
                 </a>
@@ -410,7 +448,6 @@ export default function App() {
             selectedFolderFilter={selectedFolderFilter}
             onOpenCreateItemModal={handleOpenCreateModal}
             theme={theme}
-            onToggleTheme={toggleTheme}
           />
         </div>
 
@@ -948,9 +985,9 @@ export default function App() {
             </div>
 
             <div className="scicomm-mobile-sidebar-menu" style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
-              <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { toggleTheme(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: theme === 'dark' ? 'white' : '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {theme === 'dark' ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-              </button>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
+                <LayoutDashboard size={20} color="#4b5563" /> WorkSpace
+              </a>
               <a href="https://scicomm-superbugs.github.io/Portal/#/portal" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </a>

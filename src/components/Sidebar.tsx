@@ -18,7 +18,6 @@ interface SidebarProps {
   selectedFolderFilter: string | null;
   onOpenCreateItemModal: (type: 'task' | 'meeting' | 'note') => void;
   theme?: 'dark' | 'light';
-  onToggleTheme?: () => void;
 }
 
 export function Sidebar({
@@ -28,8 +27,7 @@ export function Sidebar({
   onSelectFolderFilter,
   selectedFolderFilter,
   onOpenCreateItemModal,
-  theme = 'dark',
-  onToggleTheme
+  theme = 'dark'
 }: SidebarProps) {
   // Counts of items for indicators
   const totalTasks = state.tasks.length;
@@ -54,10 +52,7 @@ export function Sidebar({
   return (
     <div id="app-sidebar" className="w-full lg:w-64 h-full flex flex-col bg-[#0F0F12] border-r border-white/5 text-slate-300">
       {/* Brand Logo & Name */}
-      <div className="px-6 py-6 border-b border-white/5 flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-indigo-600 text-white">
-          <Layers className="w-5 h-5" />
-        </div>
+      <div className="px-6 py-6 border-b border-white/5 flex items-center">
         <div>
           <h1 className="text-sm font-bold text-white tracking-widest uppercase">Kortex</h1>
           <span className="text-[10px] text-white/40 font-semibold tracking-wider block">Workspace</span>
@@ -201,33 +196,6 @@ export function Sidebar({
       {/* Footer */}
       <div className="p-4 border-t border-white/5 bg-[#0F0F12] flex items-center justify-between gap-2 shrink-0">
         <span className="text-[10px] text-white/30 block">Local Storage Sync</span>
-        
-        {onToggleTheme && (
-          <button
-            id="desktop-theme-toggle"
-            type="button"
-            onClick={onToggleTheme}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-bold bg-white/5 hover:bg-white/10 active:scale-95 text-slate-300 hover:text-white border border-white/5 cursor-pointer transition-all shadow-sm"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {theme === 'dark' ? (
-              <>
-                <svg className="w-3.5 h-3.5 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="4"/>
-                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                </svg>
-                <span>Light</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-3.5 h-3.5 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-                </svg>
-                <span>Dark</span>
-              </>
-            )}
-          </button>
-        )}
       </div>
     </div>
   );
