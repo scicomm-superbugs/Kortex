@@ -324,7 +324,7 @@ export default function App() {
           <div className="scicomm-header-left">
             {/* Mobile: Profile avatar triggers sidebar | Desktop: Logo */}
             <button onClick={() => setMobileSidebarOpen(true)} className="scicomm-mobile-profile-link" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></button>
-            <a href="http://localhost:5173/#/portal"><img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => (e.target as HTMLElement).style.display='none'} /></a>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/portal"><img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => (e.target as HTMLElement).style.display='none'} /></a>
             <div className="scicomm-search-box">
               <Search className="icon text-slate-500" size={16} />
               <input 
@@ -333,12 +333,12 @@ export default function App() {
                 placeholder="Search..." 
                 value={searchText} 
                 onChange={e => setSearchText(e.target.value)} 
-                onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { window.location.href = 'http://localhost:5173/#/network?q=' + encodeURIComponent(searchText); setSearchText(''); } }} 
+                onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { window.location.href = 'https://scicomm-superbugs.github.io/Portal/#/network?q=' + encodeURIComponent(searchText); setSearchText(''); } }} 
               />
             </div>
           </div>
           {/* Mobile: Chat icon top-right with optional unread badge */}
-          <a href="http://localhost:5173/#/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
+          <a href="https://scicomm-superbugs.github.io/Portal/#/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
             <MessageCircle className="icon text-slate-400" size={24} color="currentColor" />
           </a>
           <nav className="scicomm-nav">
@@ -354,9 +354,9 @@ export default function App() {
               <span className="nav-text">WorkSpace</span>
             </button>
 
-            <a href="http://localhost:5173/#/community" className="scicomm-nav-item"><Globe className="icon" size={20} /><span className="nav-text">Community</span></a>
-            <a href="http://localhost:5173/#/network" className="scicomm-nav-item"><Users className="icon" size={20} /><span className="nav-text">Network</span></a>
-            <a href="http://localhost:5173/#/chat" className="scicomm-nav-item"><MessageCircle className="icon" size={20} /><span className="nav-text">Chat</span></a>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/community" className="scicomm-nav-item"><Globe className="icon" size={20} /><span className="nav-text">Community</span></a>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/network" className="scicomm-nav-item"><Users className="icon" size={20} /><span className="nav-text">Network</span></a>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/chat" className="scicomm-nav-item"><MessageCircle className="icon" size={20} /><span className="nav-text">Chat</span></a>
 
             {/* Profile Dropdown */}
             <div className="scicomm-nav-item profile-dropdown-container">
@@ -371,23 +371,23 @@ export default function App() {
                       <div style={{fontSize:'12px',color:'rgba(0,0,0,0.6)'}}>{adminUser?.email || 'admin@workspace.com'}</div>
                     </div>
                   </div>
-                  <a href="http://localhost:5173/#/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</a>
+                  <a href="https://scicomm-superbugs.github.io/Portal/#/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</a>
                 </div>
                 <button onClick={toggleTheme} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   {theme === 'dark' ? <Sun className="icon" size={16} /> : <Moon className="icon" size={16} />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </button>
-                <a href="http://localhost:5173/#/settings" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
+                <a href="https://scicomm-superbugs.github.io/Portal/#/settings" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
                   <Settings className="icon" size={16} /> Settings
                 </a>
-                <a href="http://localhost:5173/#/portal" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                <a href="https://scicomm-superbugs.github.io/Portal/#/portal" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
                   <Building2 className="icon" size={16} /> Switch Hub
                 </a>
                 <div className="dropdown-divider"></div>
-                <a href="http://localhost:5173/#/login" className="dropdown-item">Sign Out</a>
+                <a href="https://scicomm-superbugs.github.io/Portal/#/login" className="dropdown-item">Sign Out</a>
               </div>
             </div>
 
-            <a href="http://localhost:5173/#/download" className="scicomm-download-btn-wrapper" style={{ position: 'relative', marginLeft: '8px' }}>
+            <a href="https://scicomm-superbugs.github.io/Portal/#/download" className="scicomm-download-btn-wrapper" style={{ position: 'relative', marginLeft: '8px' }}>
               <div className="scicomm-download-btn-inner">
                 <Smartphone className="icon" size={16} />
                 <span className="nav-text">Download App</span>
@@ -936,10 +936,10 @@ export default function App() {
           <div className="scicomm-mobile-sidebar" style={{ position: 'relative', width: '280px', maxWidth: '80%', background: theme === 'dark' ? '#141417' : 'white', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 12px rgba(0,0,0,0.2)', animation: 'slideRight 0.3s ease' }}>
             <div className="scicomm-mobile-sidebar-header" style={{ padding: '20px 16px', borderBottom: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#e0dfdc'}` }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <a href="http://localhost:5173/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none' }}>{renderAvatar(56)}</a>
+                <a href="https://scicomm-superbugs.github.io/Portal/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none' }}>{renderAvatar(56)}</a>
                 <button className="scicomm-mobile-sidebar-close" onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
               </div>
-              <a href="http://localhost:5173/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <h3 className="scicomm-mobile-sidebar-name" style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', color: theme === 'dark' ? 'white' : 'inherit' }}>
                   {adminUser?.name || 'Administrator'}
                 </h3>
@@ -951,10 +951,10 @@ export default function App() {
               <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { toggleTheme(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: theme === 'dark' ? 'white' : '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {theme === 'dark' ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </button>
-              <a href="http://localhost:5173/#/portal" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/portal" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
                 <Building2 size={20} color="#4b5563" /> Switch Hub
               </a>
-              <a href="http://localhost:5173/#/download" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/download" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
                 <Smartphone size={20} color="#4b5563" /> Download App
               </a>
               <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
@@ -963,8 +963,8 @@ export default function App() {
             </div>
 
             <div className="scicomm-mobile-sidebar-footer" style={{ padding: '12px 0', borderTop: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#e0dfdc'}` }}>
-              <a href="http://localhost:5173/#/settings" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}><Settings size={20} /> Settings</a>
-              <a href="http://localhost:5173/#/login" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}>Sign Out</a>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/settings" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}><Settings size={20} /> Settings</a>
+              <a href="https://scicomm-superbugs.github.io/Portal/#/login" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}>Sign Out</a>
             </div>
           </div>
           <style>{`
