@@ -1,0 +1,6 @@
+{
+  "name": "Kortex Workspace",
+  "description": "Multi-dimensional productivity workspace to seamlessly manage, organize in folders, and visually link tasks, meetings, calendar events, and notes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
