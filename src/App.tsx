@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Menu, X, Layers, Plus, Calendar, CheckSquare, FileText, 
   Tag, Folder, Clock, AlertCircle, Sparkles, Sidebar as SidebarIcon,
-  LayoutDashboard, ListTodo, FolderClosed, Settings2, Grid, Bell, ShieldAlert
+  LayoutDashboard, ListTodo, FolderClosed, Settings2, Grid, Search, Globe, Users, MessageCircle, Sun, Moon, Settings, Building2, Smartphone, UserCircle
 } from 'lucide-react';
 import { WorkspaceState, ViewType, Task, Meeting, Note, PriorityType } from './types';
 import { INITIAL_STATE, generateId } from './utils';
@@ -20,8 +20,6 @@ import { TasksView } from './components/TasksView';
 import { NotesView } from './components/NotesView';
 import { CalendarView } from './components/CalendarView';
 import { FoldersView } from './components/FoldersView';
-import { NotificationsView } from './components/NotificationsView';
-import { AdminView } from './components/AdminView';
 
 const STORAGE_KEY = 'linked_workspace_state_v1';
 
@@ -118,11 +116,92 @@ export default function App() {
   });
 
   // Navigation and focus state controllers
-  const [activeView, setActiveView] = useState<ViewType>('dashboard');
+  const [activeView, setActiveView] = useState<ViewType>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const view = params.get('view') as ViewType;
+    const validViews: ViewType[] = ['dashboard', 'tasks', 'notes', 'calendar', 'folders'];
+    if (view && validViews.includes(view)) {
+      return view;
+    }
+    return 'dashboard';
+  });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') !== activeView) {
+      params.set('view', activeView);
+      const newRelativePathQuery = window.location.pathname + '?' + params.toString() + window.location.hash;
+      window.history.pushState(null, '', newRelativePathQuery);
+    }
+  }, [activeView]);
+
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [selectedFolderFilter, setSelectedFolderFilter] = useState<string | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMobileMoreOpen, setIsMobileMoreOpen] = useState(false);
+
+  const [searchText, setSearchText] = useState('');
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('user_id');
+    const userName = params.get('user_name');
+    const userEmail = params.get('user_email');
+    const userAvatar = params.get('user_avatar');
+
+    if (userId) {
+      setState(prev => {
+        const updatedUsers = prev.teamUsers ? [...prev.teamUsers] : [];
+        const exists = updatedUsers.some(u => u.id === userId);
+        
+        if (exists) {
+          const idx = updatedUsers.findIndex(u => u.id === userId);
+          if (idx !== -1) {
+            updatedUsers[idx] = {
+              ...updatedUsers[idx],
+              name: userName || updatedUsers[idx].name,
+              email: userEmail || updatedUsers[idx].email,
+              avatar: userAvatar || updatedUsers[idx].avatar,
+            };
+          }
+        } else {
+          updatedUsers.push({
+            id: userId,
+            name: userName || 'User',
+            email: userEmail || 'user@portal.com',
+            avatar: userAvatar || '',
+            role: 'member',
+            color: '#8b5cf6',
+            completedTasks: 0,
+            totalTasks: 0,
+            activeStatus: 'online'
+          });
+        }
+        
+        return {
+          ...prev,
+          teamUsers: updatedUsers,
+          currentUserRoleId: userId
+        };
+      });
+
+      // Clean up URL parameters from browser search bar without refreshing page
+      params.delete('user_id');
+      params.delete('user_name');
+      params.delete('user_email');
+      params.delete('user_avatar');
+      const newRelativePathQuery = window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash;
+      window.history.replaceState(null, '', newRelativePathQuery);
+    }
+  }, []);
+
+  const adminUser = state.teamUsers?.find(u => u.id === state.currentUserRoleId) || state.teamUsers?.find(u => u.id === 'user-admin') || INITIAL_STATE.teamUsers?.[0];
+
+  const renderAvatar = (size = 24) => {
+    if (adminUser?.avatar) return <img src={adminUser.avatar} alt="Me" style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover' }} />;
+    return <UserCircle className="icon" size={size} />;
+  };
 
   // Unified creation popup states
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -239,63 +318,84 @@ export default function App() {
   return (
     <div id="application-container" className="fixed inset-0 flex flex-col bg-[#0A0A0C] border-none select-none text-slate-200 overflow-hidden font-sans">
       
-      {/* MOBILE APPLICATION NAV-BAR HEADER */}
-      <div id="mobile-navigation-bar" className="lg:hidden flex items-center justify-between px-5 h-16 bg-[#0F0F12] border-b border-white/5 shrink-0 select-none">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="p-1 rounded-lg bg-indigo-600 text-white">
-              <Layers className="w-4 h-4" />
-            </span>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#94a3b8]">Kortex Workspace</span>
+      {/* SciComm header upper bar */}
+      <header className="scicomm-header shrink-0">
+        <div className="scicomm-header-content">
+          <div className="scicomm-header-left">
+            {/* Mobile: Profile avatar triggers sidebar | Desktop: Logo */}
+            <button onClick={() => setMobileSidebarOpen(true)} className="scicomm-mobile-profile-link" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}><span className="scicomm-mobile-avatar">{renderAvatar(30)}</span></button>
+            <a href="http://localhost:5173/#/portal"><img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" className="scicomm-logo" onError={e => (e.target as HTMLElement).style.display='none'} /></a>
+            <div className="scicomm-search-box">
+              <Search className="icon text-slate-500" size={16} />
+              <input 
+                type="text" 
+                className="scicomm-search-input" 
+                placeholder="Search..." 
+                value={searchText} 
+                onChange={e => setSearchText(e.target.value)} 
+                onKeyDown={e => { if(e.key === 'Enter' && searchText.trim()) { window.location.href = 'http://localhost:5173/#/network?q=' + encodeURIComponent(searchText); setSearchText(''); } }} 
+              />
+            </div>
           </div>
+          {/* Mobile: Chat icon top-right with optional unread badge */}
+          <a href="http://localhost:5173/#/chat" className="scicomm-mobile-chat-link" style={{ position: 'relative' }}>
+            <MessageCircle className="icon text-slate-400" size={24} color="currentColor" />
+          </a>
+          <nav className="scicomm-nav">
+            <button 
+              onClick={() => {
+                setActiveView('dashboard');
+                setSelectedFolderFilter(null);
+              }} 
+              className={`scicomm-nav-item ${activeView === 'dashboard' ? 'active' : ''}`} 
+              style={{ position: 'relative' }}
+            >
+              <LayoutDashboard className="icon" size={20} />
+              <span className="nav-text">WorkSpace</span>
+            </button>
+
+            <a href="http://localhost:5173/#/community" className="scicomm-nav-item"><Globe className="icon" size={20} /><span className="nav-text">Community</span></a>
+            <a href="http://localhost:5173/#/network" className="scicomm-nav-item"><Users className="icon" size={20} /><span className="nav-text">Network</span></a>
+            <a href="http://localhost:5173/#/chat" className="scicomm-nav-item"><MessageCircle className="icon" size={20} /><span className="nav-text">Chat</span></a>
+
+            {/* Profile Dropdown */}
+            <div className="scicomm-nav-item profile-dropdown-container">
+              {renderAvatar(24)}
+              <span className="nav-text">Me <span className="emoji">▼</span></span>
+              <div className="scicomm-dropdown">
+                <div style={{padding:'12px 16px', borderBottom:'1px solid #e0dfdc'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                    {renderAvatar(44)}
+                    <div>
+                      <div style={{fontWeight:600,fontSize:'14px',display:'flex',alignItems:'center',gap:'4px', color:'#1e293b'}}>{adminUser?.name || 'Administrator'}</div>
+                      <div style={{fontSize:'12px',color:'rgba(0,0,0,0.6)'}}>{adminUser?.email || 'admin@workspace.com'}</div>
+                    </div>
+                  </div>
+                  <a href="http://localhost:5173/#/profile" className="scicomm-btn-secondary" style={{marginTop:'8px',display:'block',textAlign:'center',textDecoration:'none',padding:'4px 12px',fontSize:'13px'}}>View Profile</a>
+                </div>
+                <button onClick={toggleTheme} className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                  {theme === 'dark' ? <Sun className="icon" size={16} /> : <Moon className="icon" size={16} />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                </button>
+                <a href="http://localhost:5173/#/settings" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px', textDecoration:'none', color:'inherit'}}>
+                  <Settings className="icon" size={16} /> Settings
+                </a>
+                <a href="http://localhost:5173/#/portal" className="dropdown-item" style={{display:'flex',alignItems:'center',gap:'8px'}}>
+                  <Building2 className="icon" size={16} /> Switch Hub
+                </a>
+                <div className="dropdown-divider"></div>
+                <a href="http://localhost:5173/#/login" className="dropdown-item">Sign Out</a>
+              </div>
+            </div>
+
+            <a href="http://localhost:5173/#/download" className="scicomm-download-btn-wrapper" style={{ position: 'relative', marginLeft: '8px' }}>
+              <div className="scicomm-download-btn-inner">
+                <Smartphone className="icon" size={16} />
+                <span className="nav-text">Download App</span>
+              </div>
+            </a>
+          </nav>
         </div>
-
-        {/* Action icons block containing mobile notification bell and task completion status and triggers */}
-        <div className="flex items-center gap-3">
-          {/* Theme Quick Toggle */}
-          <button
-            id="mobile-theme-toggle"
-            type="button"
-            onClick={toggleTheme}
-            className="p-2 rounded-xl bg-white/5 border border-white/5 text-slate-400 hover:bg-white/10 active:scale-95 transition-all cursor-pointer flex items-center justify-center shrink-0"
-            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          >
-            {theme === 'dark' ? (
-              <svg className="w-4.5 h-4.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="4"/>
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-              </svg>
-            ) : (
-              <svg className="w-4.5 h-4.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-              </svg>
-            )}
-          </button>
-
-          {/* Notification Quick Access Bell with Badge */}
-          <button
-            onClick={() => {
-              setActiveView('notifications');
-              setIsMobileMoreOpen(false);
-            }}
-            className={`relative p-2 rounded-xl transition-all cursor-pointer border ${
-              activeView === 'notifications'
-                ? 'bg-indigo-650/15 border-indigo-500/25 text-indigo-400'
-                : 'bg-white/5 border-white/5 text-slate-400 hover:bg-white/10'
-            }`}
-            title="Notification Center"
-          >
-            <Bell className="w-4.5 h-4.5" />
-            {state.notifications && state.notifications.filter(n => !n.read).length > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-extrabold text-white animate-pulse">
-                {state.notifications.filter(n => !n.read).length}
-              </span>
-            )}
-          </button>
-
-
-        </div>
-      </div>
+      </header>
 
       {/* CORE FRAME CONTAINER: SIDEBAR + MAIN PAGE + CONTEXT PANEL */}
       <div id="core-frame-screen" className="flex-1 flex overflow-hidden relative">
@@ -335,14 +435,7 @@ export default function App() {
             />
           )}
 
-          {activeView === 'notifications' && (
-            <NotificationsView
-              state={state}
-              setState={setState}
-              onSelectItem={handleNavigateToItem}
-              playChime={playNotificationChime}
-            />
-          )}
+
 
           {activeView === 'tasks' && (
             <TasksView
@@ -388,13 +481,7 @@ export default function App() {
             />
           )}
 
-          {activeView === 'admin' && (
-            <AdminView
-              state={state}
-              setState={setState}
-              pushToast={pushToast}
-            />
-          )}
+
         </div>
 
         {/* SIDEBAR PREVIEW OVERLAY DRAWER - FULFILL SAME PAGE RECURSIVE REQUIREMENT */}
@@ -715,22 +802,6 @@ export default function App() {
             <div className="grid grid-cols-3 gap-2.5">
               <button
                 onClick={() => {
-                  setActiveView('admin');
-                  setIsMobileMoreOpen(false);
-                }}
-                className={`relative py-3 px-2 rounded-xl border transition-all text-center flex flex-col items-center justify-center gap-2 cursor-pointer ${
-                  activeView === 'admin'
-                    ? 'bg-indigo-650/10 border-indigo-500/30 text-white font-bold'
-                    : 'bg-white/5 border-transparent text-[#94a3b8] active:bg-white/10'
-                }`}
-              >
-                <div className="absolute -top-1 px-1 py-0.2 rounded bg-indigo-500/25 text-[6px] font-extrabold tracking-widest uppercase text-indigo-300 border border-indigo-500/30 scale-75 animate-pulse">ADMIN</div>
-                <ShieldAlert className="w-5 h-5 text-indigo-400 mx-auto" />
-                <span className="text-[10px] font-semibold leading-none">Admin View</span>
-              </button>
-
-              <button
-                onClick={() => {
                   setActiveView('notes');
                   setIsMobileMoreOpen(false);
                 }}
@@ -772,26 +843,6 @@ export default function App() {
               >
                 <FolderClosed className="w-5 h-5 text-indigo-400 mx-auto" />
                 <span className="text-[10px] font-semibold leading-none">Folders</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveView('notifications');
-                  setIsMobileMoreOpen(false);
-                }}
-                className={`relative py-3 px-2 rounded-xl border transition-all text-center flex flex-col items-center justify-center gap-2 cursor-pointer ${
-                  activeView === 'notifications'
-                    ? 'bg-indigo-600/10 border-indigo-500/30 text-white font-bold'
-                    : 'bg-white/5 border-transparent text-[#94a3b8] active:bg-white/10'
-                }`}
-              >
-                <Bell className="w-5 h-5 text-indigo-400 mx-auto" />
-                <span className="text-[10px] font-semibold leading-none">Alerts</span>
-                {state.notifications && state.notifications.filter(n => !n.read).length > 0 && (
-                  <span className="absolute top-1.5 right-1.5 flex h-4 min-w-4 px-1.5 items-center justify-center rounded-full bg-rose-500 text-[9px] font-extrabold text-white animate-pulse">
-                    {state.notifications.filter(n => !n.read).length}
-                  </span>
-                )}
               </button>
             </div>
 
@@ -878,6 +929,52 @@ export default function App() {
         })}
       </div>
 
+      {/* Mobile Profile Sidebar Overlay */}
+      {mobileSidebarOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)' }} onClick={() => setMobileSidebarOpen(false)} />
+          <div className="scicomm-mobile-sidebar" style={{ position: 'relative', width: '280px', maxWidth: '80%', background: theme === 'dark' ? '#141417' : 'white', height: '100%', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 12px rgba(0,0,0,0.2)', animation: 'slideRight 0.3s ease' }}>
+            <div className="scicomm-mobile-sidebar-header" style={{ padding: '20px 16px', borderBottom: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#e0dfdc'}` }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <a href="http://localhost:5173/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none' }}>{renderAvatar(56)}</a>
+                <button className="scicomm-mobile-sidebar-close" onClick={() => setMobileSidebarOpen(false)} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#666', marginTop: '-8px' }}>×</button>
+              </div>
+              <a href="http://localhost:5173/#/profile" onClick={() => setMobileSidebarOpen(false)} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <h3 className="scicomm-mobile-sidebar-name" style={{ margin: '0 0 4px', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', color: theme === 'dark' ? 'white' : 'inherit' }}>
+                  {adminUser?.name || 'Administrator'}
+                </h3>
+              </a>
+              <div className="scicomm-mobile-sidebar-dept" style={{ color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '14px', marginBottom: '4px', fontWeight: 500 }}>{adminUser?.email}</div>
+            </div>
+
+            <div className="scicomm-mobile-sidebar-menu" style={{ flex: 1, overflowY: 'auto', padding: '12px 0' }}>
+              <button className="scicomm-mobile-sidebar-menu-item" onClick={() => { toggleTheme(); setMobileSidebarOpen(false); }} style={{ width: '100%', padding: '14px 16px', background: 'none', border: 'none', textAlign: 'left', fontSize: '15px', fontWeight: 600, color: theme === 'dark' ? 'white' : '#1f2937', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {theme === 'dark' ? <Sun size={20} color="#4b5563" /> : <Moon size={20} color="#4b5563" />} {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </button>
+              <a href="http://localhost:5173/#/portal" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
+                <Building2 size={20} color="#4b5563" /> Switch Hub
+              </a>
+              <a href="http://localhost:5173/#/download" className="scicomm-mobile-sidebar-menu-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? 'white' : '#1f2937', fontSize: '15px', fontWeight: 600 }}>
+                <Smartphone size={20} color="#4b5563" /> Download App
+              </a>
+              <div style={{ padding: '24px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 'auto' }}>
+                <img src={theme === 'dark' ? "./aiu_scicomm_dark.png" : "./aiu_scicomm_light.png"} alt="AIU SciComm" style={{ maxHeight: '120px', opacity: 0.9 }} onError={e => (e.target as HTMLElement).style.display='none'} />
+              </div>
+            </div>
+
+            <div className="scicomm-mobile-sidebar-footer" style={{ padding: '12px 0', borderTop: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.08)' : '#e0dfdc'}` }}>
+              <a href="http://localhost:5173/#/settings" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}><Settings size={20} /> Settings</a>
+              <a href="http://localhost:5173/#/login" className="scicomm-mobile-sidebar-footer-item" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', textDecoration: 'none', color: theme === 'dark' ? '#94a3b8' : '#4b5563', fontSize: '15px', fontWeight: 600 }}>Sign Out</a>
+            </div>
+          </div>
+          <style>{`
+            @keyframes slideRight {
+              from { transform: translateX(-100%); }
+              to { transform: translateX(0); }
+            }
+          `}</style>
+        </div>
+      )}
     </div>
   );
 }

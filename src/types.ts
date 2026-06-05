@@ -115,7 +115,7 @@ export interface AppNotification {
 
 export type WorkspaceItem = Task | Meeting | Note;
 
-export type ViewType = 'dashboard' | 'tasks' | 'notes' | 'calendar' | 'folders' | 'notifications' | 'admin';
+export type ViewType = 'dashboard' | 'tasks' | 'notes' | 'calendar' | 'folders';
 
 export interface TeamUser {
   id: string;

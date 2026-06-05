@@ -6,7 +6,7 @@
 import React from 'react';
 import { 
   LayoutDashboard, ListTodo, Calendar, FileText, FolderClosed, 
-  Settings2, Plus, Brain, Database, Layers, FolderIcon, Tag, Bell, ShieldAlert
+  Settings2, Plus, Brain, Database, Layers, FolderIcon, Tag
 } from 'lucide-react';
 import { WorkspaceState, ViewType, Folder } from '../types';
 
@@ -35,7 +35,7 @@ export function Sidebar({
   const totalTasks = state.tasks.length;
   const totalMeetings = state.meetings.length;
   const totalNotes = state.notes.length;
-  const unreadNotifications = state.notifications ? state.notifications.filter(n => !n.read).length : 0;
+
 
   const getFolderItemCount = (folderId: string) => {
     const tasksCount = state.tasks.filter(t => t.folderId === folderId).length;
@@ -49,8 +49,6 @@ export function Sidebar({
     { view: 'tasks' as ViewType, label: 'Tasks', icon: ListTodo, count: totalTasks },
     { view: 'notes' as ViewType, label: 'Notes', icon: FileText, count: totalNotes },
     { view: 'calendar' as ViewType, label: 'Calendar', icon: Calendar, count: null },
-    { view: 'notifications' as ViewType, label: 'Notifications', icon: Bell, count: unreadNotifications > 0 ? unreadNotifications : null, isEmergency: unreadNotifications > 0 },
-    { view: 'admin' as ViewType, label: 'Admin Dashboard', icon: ShieldAlert, count: null },
   ];
 
   return (
@@ -99,9 +97,7 @@ export function Sidebar({
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                     isActive 
                       ? 'bg-indigo-500/20 text-indigo-350 border border-indigo-500/30' 
-                      : item.view === 'notifications'
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/20'
-                        : 'bg-white/5 text-slate-500'
+                      : 'bg-white/5 text-slate-500'
                   }`}>
                     {item.count}
                   </span>

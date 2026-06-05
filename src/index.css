@@ -289,3 +289,424 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* ===== SciComm Header integration in Kortex ===== */
+.scicomm-header {
+  background-color: #fff;
+  border-bottom: 1px solid #e0dfdc;
+  height: 52px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.scicomm-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1128px;
+  margin: 0 auto;
+  padding: 0 16px;
+  height: 100%;
+}
+
+.scicomm-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scicomm-logo {
+  height: 34px;
+  border-radius: 4px;
+  display: block;
+}
+
+.scicomm-search-box {
+  display: flex;
+  align-items: center;
+  background-color: #eef3f8;
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 34px;
+  width: 280px;
+}
+
+.scicomm-search-box input {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  margin-left: 8px;
+  width: 100%;
+  font-size: 14px;
+  color: rgba(0,0,0,0.9) !important;
+}
+
+.scicomm-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.scicomm-nav-item,
+.scicomm-nav-item:visited,
+.scicomm-nav-item:hover,
+.scicomm-nav-item:focus,
+.scicomm-nav-item:active,
+.scicomm-nav-item.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0,0,0,0.6) !important;
+  text-decoration: none !important;
+  width: 80px !important;
+  box-sizing: border-box !important;
+  height: 44px !important;
+  align-self: center !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.scicomm-nav-item svg,
+.scicomm-nav-item .icon {
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+.scicomm-nav-item:hover {
+  color: rgba(0,0,0,0.9) !important;
+}
+
+.scicomm-nav-item.active {
+  color: rgba(0,0,0,0.9) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 8px !important;
+}
+
+.nav-text {
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.nav-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-dropdown-container {
+  position: relative;
+}
+
+.scicomm-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0dfdc;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  min-width: 260px;
+  flex-direction: column;
+  z-index: 200;
+}
+
+.profile-dropdown-container:hover .scicomm-dropdown {
+  display: flex;
+}
+
+.dropdown-item {
+  padding: 10px 16px;
+  text-decoration: none;
+  color: rgba(0,0,0,0.9) !important;
+  font-size: 14px;
+  border: none !important;
+  background: none !important;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f2ef !important;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e0dfdc;
+  margin: 4px 0;
+}
+
+/* Download App button in Header */
+.scicomm-download-btn-wrapper,
+.scicomm-download-btn-wrapper:visited,
+.scicomm-download-btn-wrapper:hover,
+.scicomm-download-btn-wrapper:focus,
+.scicomm-download-btn-wrapper:active,
+.scicomm-download-btn-wrapper.active {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  min-width: unset !important;
+  height: 100% !important;
+  padding: 0 !important;
+  text-decoration: none !important;
+}
+
+.scicomm-download-btn-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e0f0ff 100%) !important;
+  padding: 8px 16px !important;
+  border-radius: 100px !important;
+  border: 1px solid #cce3ff !important;
+  box-shadow: 0 2px 4px rgba(0, 119, 181, 0.1) !important;
+  transition: none !important;
+}
+
+.scicomm-download-btn-inner .icon,
+.scicomm-download-btn-inner .nav-text {
+  color: #0077b5 !important;
+  stroke: #0077b5 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #e0f0ff 0%, #d0e8ff 100%) !important;
+  border-color: #b3d7ff !important;
+  box-shadow: 0 2px 4px rgba(0, 119, 181, 0.1) !important;
+  transform: none !important;
+}
+
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .icon,
+.scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner .nav-text {
+  color: #00598a !important;
+  stroke: #00598a !important;
+}
+
+.scicomm-btn-secondary {
+  background-color: transparent !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #1d4ed8 !important;
+  border-radius: 24px !important;
+  padding: 6px 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+  transition: all 0.2s !important;
+}
+
+.scicomm-btn-secondary:hover {
+  background-color: rgba(29, 78, 216, 0.08) !important;
+}
+
+/* Responsive navigation overrides */
+.scicomm-mobile-profile-link,
+.scicomm-mobile-chat-link {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .scicomm-nav {
+    display: none !important;
+  }
+  .scicomm-mobile-profile-link {
+    display: flex !important;
+    align-items: center !important;
+  }
+  .scicomm-mobile-chat-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 4px !important;
+    color: rgba(0,0,0,0.6) !important;
+  }
+  .scicomm-logo {
+    display: none !important;
+  }
+  .scicomm-header-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .scicomm-header-left {
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .scicomm-search-box {
+    flex: 1 !important;
+    width: auto !important;
+  }
+}
+
+/* === DARK THEME OVERRIDES (when [data-theme='dark'] is active in Kortex) === */
+[data-theme='dark'] .scicomm-header {
+  background-color: #0A0A0C !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .scicomm-search-box {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme='dark'] .scicomm-search-box input {
+  color: #fff !important;
+}
+
+[data-theme='dark'] .scicomm-nav-item,
+[data-theme='dark'] .scicomm-mobile-chat-link {
+  color: rgba(255,255,255,0.6) !important;
+}
+
+[data-theme='dark'] .scicomm-nav-item:hover {
+  color: #fff !important;
+}
+
+[data-theme='dark'] .scicomm-nav-item.active {
+  color: #fff !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme='dark'] .scicomm-dropdown {
+  background: #141417 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .dropdown-item {
+  color: rgba(255,255,255,0.8) !important;
+}
+
+[data-theme='dark'] .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme='dark'] .dropdown-divider {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme='dark'] .scicomm-download-btn-inner .icon,
+[data-theme='dark'] .scicomm-download-btn-inner .nav-text {
+  color: #38bdf8 !important;
+  stroke: #38bdf8 !important;
+}
+
+[data-theme='dark'] .scicomm-download-btn-wrapper:hover .scicomm-download-btn-inner {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+[data-theme='dark'] .scicomm-btn-secondary {
+  color: #38bdf8 !important;
+  border: 1px solid #38bdf8 !important;
+}
+
+[data-theme='dark'] .scicomm-btn-secondary:hover {
+  background-color: rgba(56, 189, 248, 0.08) !important;
+}
+
+/* === LIGHT THEME OVERRIDES (when [data-theme='light'] is active in Kortex) === */
+[data-theme='light'] .scicomm-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+[data-theme='light'] .scicomm-search-box {
+  background-color: #f1f5f9 !important;
+}
+
+[data-theme='light'] .scicomm-search-box input {
+  color: #0f172a !important;
+}
+
+[data-theme='light'] .scicomm-nav-item,
+[data-theme='light'] .scicomm-mobile-chat-link {
+  color: #4b5563 !important;
+}
+
+[data-theme='light'] .scicomm-nav-item:hover {
+  color: #0f172a !important;
+}
+
+[data-theme='light'] .scicomm-nav-item.active {
+  color: #0f172a !important;
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+}
+
+[data-theme='light'] .scicomm-dropdown {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme='light'] .dropdown-item {
+  color: #1f2937 !important;
+}
+
+[data-theme='light'] .dropdown-item:hover {
+  background-color: #f1f5f9 !important;
+}
+
+[data-theme='light'] .dropdown-divider {
+  background-color: #e2e8f0 !important;
+}
+
+[data-theme='light'] .scicomm-mobile-sidebar {
+  background-color: #ffffff !important;
+}
+
+/* Mobile sidebar styles */
+.scicomm-mobile-sidebar-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  text-decoration: none !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.scicomm-mobile-sidebar-footer-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  text-decoration: none !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
